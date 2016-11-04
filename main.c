@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
             vici_add_key_value(req, "auth", "pubkey", 6);
             vici_begin_list(req, "certs");
 
-            FILE* f = fopen("/etc/swanctl/x509/aicube.crt", "r");
+            FILE* f = fopen(argv[2], "r");
             fseek(f, 0, SEEK_END);
             uint64_t len = ftell(f);
             rewind(f);
