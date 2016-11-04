@@ -1,6 +1,9 @@
-#include "libvici.h"
 #include <stdlib.h>
+#include <stdio.h>
+#include <stdint.h>
 #include <errno.h>
+
+#include "libvici.h"
 
 int main(int argc, char *argv[])
 {
@@ -16,22 +19,35 @@ int main(int argc, char *argv[])
 
     vici_req_t *req = vici_begin("load-conn");
 
-    vici_begin_section(req, "test");
+    char* name = malloc(22);
+    snprintf(name, 22, "spoke-%s", argv[1]);
+
+    vici_begin_section(req, name);
 
         vici_begin_list(req, "remote_addrs");
-        vici_add_list_itemf(req, "%s", "hub.paranoidlabs.org");
+        vici_add_list_itemf(req, "%s", argv[1]);
         vici_end_list(req);
 
         vici_begin_section(req, "local");
             vici_add_key_value(req, "auth", "pubkey", 6);
             vici_begin_list(req, "certs");
-            vici_add_list_itemf(req, "%s", "aicube.crt");
+
+            FILE* f = fopen("/etc/swanctl/x509/aicube.crt", "r");
+            fseek(f, 0, SEEK_END);
+            uint64_t len = ftell(f);
+            rewind(f);
+            char* cert = malloc(len+1);
+            fread(cert, len, 1, f);
+            fclose(f);
+            cert[len] = 0;
+
+            vici_add_list_item(req, cert, len);
+
             vici_end_list(req);
         vici_end_section(req);
 
         vici_begin_section(req, "remote");
             vici_add_key_value(req, "auth", "pubkey", 6);
-            vici_add_key_valuef(req, "id", "%s", "hub.paranoidlabs.org");
         vici_end_section(req);
 
         vici_begin_section(req, "children");
