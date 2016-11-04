@@ -5,8 +5,19 @@
 
 #include "libvici.h"
 
+void add_list(vici_req_t *req, char* type, char* proposals[]) {
+    vici_begin_list(req, type);
+    int i;
+    for(i=0; i < sizeof(proposals)/sizeof(proposals[0]); i++)
+        vici_add_list_itemf(req, proposals[0]);
+    vici_end_list(req);
+}
+
 int main(int argc, char *argv[])
 {
+    char* proposals[] = {"chacha20poly1305-aes256gcm16-prfsha384-ecp384bp-modp2048s256"};
+    char* remote_addrs[] = {argv[1]};
+
     vici_init();
 
     vici_conn_t *conn = vici_connect(NULL);
@@ -27,13 +38,15 @@ int main(int argc, char *argv[])
         vici_add_key_valuef(req, "version", "2");
         vici_add_key_valuef(req, "mobike", "no");
 
-        vici_begin_list(req, "proposals");
+        add_list(req, "proposals", proposals);
+        /*vici_begin_list(req, "proposals");
         vici_add_list_itemf(req, "chacha20poly1305-aes256gcm16-prfsha384-ecp384bp-modp2048s256");
-        vici_end_list(req);
+        vici_end_list(req);*/
 
-        vici_begin_list(req, "remote_addrs");
+	add_list(req, "remote_addrs", remote_addrs);
+        /*vici_begin_list(req, "remote_addrs");
         vici_add_list_itemf(req, "%s", argv[1]);
-        vici_end_list(req);
+        vici_end_list(req);*/
 
         vici_begin_section(req, "local");
             vici_add_key_valuef(req, "auth", "pubkey");
