@@ -18,6 +18,19 @@ int main(int argc, char *argv[])
     char* proposals[] = {"chacha20poly1305-aes256gcm16-prfsha384-ecp384bp-modp2048s256"};
     char* remote_addrs[] = {argv[1]};
 
+    FILE* f = fopen(argv[2], "r");
+    fseek(f, 0, SEEK_END);
+    uint64_t len = ftell(f);
+    rewind(f);
+    char* cert = malloc(len+1);
+    fread(cert, len, 1, f);
+    fclose(f);
+    cert[len] = 0;
+
+    char* certs[] = {cert};
+    char* esp_proposals[] = {"chacha20poly1305", "aes256gcm16"};
+    char* local_ts[] = {"dynamic[gre]"};
+
     vici_init();
 
     vici_conn_t *conn = vici_connect(NULL);
@@ -39,31 +52,11 @@ int main(int argc, char *argv[])
         vici_add_key_valuef(req, "mobike", "no");
 
         add_list(req, "proposals", proposals);
-        /*vici_begin_list(req, "proposals");
-        vici_add_list_itemf(req, "chacha20poly1305-aes256gcm16-prfsha384-ecp384bp-modp2048s256");
-        vici_end_list(req);*/
-
 	add_list(req, "remote_addrs", remote_addrs);
-        /*vici_begin_list(req, "remote_addrs");
-        vici_add_list_itemf(req, "%s", argv[1]);
-        vici_end_list(req);*/
 
         vici_begin_section(req, "local");
             vici_add_key_valuef(req, "auth", "pubkey");
-            vici_begin_list(req, "certs");
-
-            FILE* f = fopen(argv[2], "r");
-            fseek(f, 0, SEEK_END);
-            uint64_t len = ftell(f);
-            rewind(f);
-            char* cert = malloc(len+1);
-            fread(cert, len, 1, f);
-            fclose(f);
-            cert[len] = 0;
-
-            vici_add_list_item(req, cert, len);
-
-            vici_end_list(req);
+	    add_list(req, "certs", certs);
         vici_end_section(req);
 
         vici_begin_section(req, "remote");
@@ -72,17 +65,10 @@ int main(int argc, char *argv[])
 
         vici_begin_section(req, "children");
             vici_begin_section(req, "transport");
-                vici_begin_list(req, "local_ts");
-                    vici_add_list_itemf(req, "dynamic[gre]");
-                vici_end_list(req);
+	        add_list(req, "local_ts", local_ts);
                 vici_add_key_valuef(req, "updown", "/usr/lib/strongswan/_updown");
                 vici_add_key_valuef(req, "mode", "transport");
-
-            vici_begin_list(req, "esp_proposals");
-                vici_add_list_itemf(req, "chacha20poly1305");
-                vici_add_list_itemf(req, "aes256gcm16");
-            vici_end_list(req);
-
+	        add_list(req, "esp_proposals", esp_proposals);
                 vici_add_key_valuef(req, "priority", "2");
             vici_end_section(req);
         vici_end_section(req);
