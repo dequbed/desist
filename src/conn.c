@@ -1,10 +1,10 @@
 #include "conn.h"
 
-void add_list(vici_req_t* req, char* type, char* proposals[], uint64_t len)
+void add_list(vici_req_t* req, char* type, char* proposals[], uint32_t len)
 {
     vici_begin_list(req, type);
 
-    for (uint64_t i = 0; i < len; i++)
+    for (uint32_t i = 0; i < len; i++)
         vici_add_list_itemf(req, proposals[i]);
 
     vici_end_list(req);
@@ -17,7 +17,7 @@ int setup(char* remote)
 
     FILE* f = fopen("/etc/swanctl/x509/mesh.crt", "r");
     fseek(f, 0, SEEK_END);
-    uint64_t len = ftell(f);
+    uint32_t len = ftell(f);
     rewind(f);
     char* cert = malloc(len + 1);
     fread(cert, len, 1, f);

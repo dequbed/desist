@@ -19,7 +19,7 @@
 typedef struct
 {
     char* key;
-    uint64_t val;
+    int32_t val;
 } kval_t;
 
 static kval_t lookuptable[] =
