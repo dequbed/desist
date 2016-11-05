@@ -1,3 +1,5 @@
 opennhrp-script
 *.swp
 *.o
+
+*.prefmt

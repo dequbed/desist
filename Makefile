@@ -8,6 +8,20 @@ LIBS = -lvici
 
 SRCS = src/opennhrp-script.c src/util.c src/conn.c
 
+FMT = astyle
+FMT_OPT = --style=allman \
+		  --indent=spaces\
+		  --indent-switches\
+		  --indent-preproc-block\
+		  --break-blocks\
+		  --pad-oper \
+		  --pad-header \
+		  --align-pointer=type\
+		  --align-reference=name\
+		  --remove-brackets\
+		  --convert-tabs\
+		  --suffix=.prefmt
+
 # Suffix replace syntax: $(name:string1=string2)
 OBJS = $(SRCS:.c=.o)
 
@@ -28,3 +42,9 @@ $(BIN): $(OBJS)
 
 clean:
 	$(RM) src/*.o *~ $(BIN)
+
+style:
+	$(FMT) $(FMT_OPT) src/*.c src/*.h
+
+clean-style:
+	$(RM) src/*.prefmt
