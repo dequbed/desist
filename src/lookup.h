@@ -16,9 +16,14 @@
 #define ROUTE_UP 7
 #define ROUTE_DOWN 8
 
-typedef struct { char *key; uint64_t val; } kval_t;
+typedef struct
+{
+    char* key;
+    uint64_t val;
+} kval_t;
 
-static kval_t lookuptable[] = {
+static kval_t lookuptable[] =
+{
     { "interface-up", INTERFACE_UP },
     { "peer-register", PEER_REGISTER },
     { "peer-up", PEER_UP },
