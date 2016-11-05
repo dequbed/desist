@@ -1,21 +1,21 @@
 #include "conn.h"
 
-void add_list(vici_req_t* req, char* type, char* proposals[])
+void add_list(vici_req_t* req, char* type, char* proposals[], uint64_t len)
 {
     vici_begin_list(req, type);
 
-    for (uint64_t i = 0; i < sizeof(proposals) / sizeof(proposals[0]); i++)
-        vici_add_list_itemf(req, proposals[0]);
+    for (uint64_t i = 0; i < len; i++)
+        vici_add_list_itemf(req, proposals[i]);
 
     vici_end_list(req);
 }
 
-int setup(int argc, char* argv[])
+int setup(char* remote)
 {
     char* proposals[] = {"chacha20poly1305-aes256gcm16-prfsha384-ecp384bp-modp2048s256"};
-    char* remote_addrs[] = {argv[1]};
+    char* remote_addrs[] = {remote};
 
-    FILE* f = fopen(argv[2], "r");
+    FILE* f = fopen("/etc/swanctl/x509/mesh.crt", "r");
     fseek(f, 0, SEEK_END);
     uint64_t len = ftell(f);
     rewind(f);
@@ -40,20 +40,24 @@ int setup(int argc, char* argv[])
 
     vici_req_t* req = vici_begin("load-conn");
 
+    /* 22 characters are enough for an IPv4 address, but if you give a hostname
+     * or IPv6 it wont fit.
+     * TODO: Replace this with a tiny hashing algorithm (e.g. CRC32)
+     */
     char* name = malloc(22);
-    snprintf(name, 22, "spoke-%s", argv[1]);
+    snprintf(name, 22, "spoke-%s", remote);
 
     vici_begin_section(req, name);
 
     vici_add_key_valuef(req, "version", "2");
     vici_add_key_valuef(req, "mobike", "no");
 
-    add_list(req, "proposals", proposals);
-    add_list(req, "remote_addrs", remote_addrs);
+    add_list(req, "proposals", proposals, 1);
+    add_list(req, "remote_addrs", remote_addrs, 1);
 
     vici_begin_section(req, "local");
     vici_add_key_valuef(req, "auth", "pubkey");
-    add_list(req, "certs", certs);
+    add_list(req, "certs", certs, 1);
     vici_end_section(req);
 
     vici_begin_section(req, "remote");
@@ -62,10 +66,10 @@ int setup(int argc, char* argv[])
 
     vici_begin_section(req, "children");
     vici_begin_section(req, "transport");
-    add_list(req, "local_ts", local_ts);
+    add_list(req, "local_ts", local_ts, 1);
     vici_add_key_valuef(req, "updown", "/usr/lib/strongswan/_updown");
     vici_add_key_valuef(req, "mode", "transport");
-    add_list(req, "esp_proposals", esp_proposals);
+    add_list(req, "esp_proposals", esp_proposals, 2);
     vici_add_key_valuef(req, "priority", "2");
     vici_end_section(req);
     vici_end_section(req);
