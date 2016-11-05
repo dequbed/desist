@@ -1,1 +1,8 @@
-compile with `clang -Wall -g main.c -L/usr/lib/ipsec/ -lvici` and run with `LD_LIBRARY_PATH="/usr/lib/ipsec/" ./a.out <remote ip> <certificate>`
+## Dynamic & Extensible Spoke/IPsec Setup Tool (DESIST)
+
+Sets up Spoke-Spoke IPsec Context for use with OpenNHRP.
+
+If you want automatic formatting of your code before you commit (style is not
+enforced server-side but it's still a nice gesture) install the pre-commit hook:
+
+`$ cp pre-commit .git/hooks/ && chmod +x .git/hooks/pre-commit`
