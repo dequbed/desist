@@ -6,4 +6,4 @@
 /*
  * Lookup a string in the lookuptable defined in lookup.h
  */
-uint64_t lookup(char* key);
+int32_t lookup(char* key);
