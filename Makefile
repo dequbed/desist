@@ -27,4 +27,4 @@ $(BIN): $(OBJS)
 	$(CC) $(CFLAGS) -c $<  -o $@
 
 clean:
-	$(RM) *.o *~ $(BIN)
+	$(RM) src/*.o *~ $(BIN)
