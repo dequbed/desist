@@ -6,7 +6,7 @@ LFLAGS = -L/usr/lib/ipsec/
 
 LIBS = -lvici
 
-SRCS = src/opennhrp-script.c src/util.c
+SRCS = src/opennhrp-script.c src/util.c src/conn.c
 
 # Suffix replace syntax: $(name:string1=string2)
 OBJS = $(SRCS:.c=.o)
