@@ -1,19 +1,47 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdint.h>
-#include <errno.h>
-
 #include "libvici.h"
+#include "opennhrp-script.h"
+#include "util.h"
 
-void add_list(vici_req_t *req, char* type, char* proposals[]) {
+void add_list(vici_req_t *req, char* type, char* proposals[])
+{
     vici_begin_list(req, type);
-    int i;
-    for(i=0; i < sizeof(proposals)/sizeof(proposals[0]); i++)
+    for(uint64_t i = 0; i < sizeof(proposals)/sizeof(proposals[0]); i++)
         vici_add_list_itemf(req, proposals[0]);
     vici_end_list(req);
 }
 
 int main(int argc, char *argv[])
+{
+    switch(lookup(argv[1]))
+    {
+        case INTERFACE_UP:
+            break;
+        case PEER_REGISTER:
+            break;
+        case PEER_UP:
+            break;
+        case PEER_DOWN:
+            break;
+        case NHS_UP:
+            break;
+        case NHS_DOWN:
+            break;
+        case ROUTE_UP:
+            break;
+        case ROUTE_DOWN:
+            break;
+
+        /* This should never trigger in normal usage */
+        case BADKEY:
+            usage();
+            break;
+    }
+}
+
+void usage(void)
+{}
+
+int setup(int argc, char *argv[])
 {
     char* proposals[] = {"chacha20poly1305-aes256gcm16-prfsha384-ecp384bp-modp2048s256"};
     char* remote_addrs[] = {argv[1]};
@@ -83,7 +111,7 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    int resi = vici_dump(res, "test", 0, stdout);
+    uint32_t resi = vici_dump(res, "test", 0, stdout);
 
     vici_disconnect(conn);
 
