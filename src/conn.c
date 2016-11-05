@@ -40,12 +40,8 @@ int setup(char* remote)
 
     vici_req_t* req = vici_begin("load-conn");
 
-    /* 22 characters are enough for an IPv4 address, but if you give a hostname
-     * or IPv6 it wont fit.
-     * TODO: Replace this with a tiny hashing algorithm (e.g. CRC32)
-     */
-    char* name = malloc(22);
-    snprintf(name, 22, "spoke-%s", remote);
+    char* name = malloc(8);
+    snprintf(name, 8, "spoke-%X", hash((uint8_t*)remote, strlen(remote)));
 
     vici_begin_section(req, name);
 
