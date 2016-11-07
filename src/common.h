@@ -11,3 +11,5 @@
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
+
+#define RT_PROTO 43

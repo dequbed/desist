@@ -6,7 +6,7 @@ LFLAGS = -L/usr/lib/ipsec/
 
 LIBS = -lvici
 
-SRCS = src/opennhrp-script.c src/util.c src/conn.c
+SRCS = src/opennhrp-script.c src/util.c src/conn.c src/hash.c src/route.c src/neigh.c
 
 FMT = astyle
 FMT_OPT = --style=allman \
