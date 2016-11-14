@@ -31,6 +31,8 @@ int32_t route_add(int32_t rt_proto, char* source, char* destination, char* mtu)
     route = rtnl_route_alloc();
     nh = rtnl_route_nh_alloc();
 
+    rtnl_route_set_protocol(route, 42);
+
     dst = nl_addr_alloc(4);
     gw = nl_addr_alloc(4);
 
