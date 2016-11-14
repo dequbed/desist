@@ -37,6 +37,7 @@ int main(int argc, char* argv[])
         case PEER_UP:
             if (destmtu != NULL)
                 route_add(RT_PROTO, srcnbma, destnbma, destmtu);
+
             break;
 
         case PEER_DOWN:

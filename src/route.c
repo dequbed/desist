@@ -18,10 +18,10 @@ int32_t route_flush(int32_t rt_proto, char* interface)
 
 int32_t route_add(int32_t rt_proto, char* source, char* destination, char* mtu)
 {
-    struct nl_sock *sk;
-    struct rtnl_route *route;
-    struct nl_addr *dst, *gw;
-    struct rtnl_nexthop *nh;
+    struct nl_sock* sk;
+    struct rtnl_route* route;
+    struct nl_addr* dst, *gw;
+    struct rtnl_nexthop* nh;
     int mtui;
 
     /* Allocate a new socket */
