@@ -1,4 +1,4 @@
-#include "opennhrp-script.h"
+#include "desist.h"
 #include "util.h"
 #include "hash.h"
 #include "neigh.h"
@@ -12,17 +12,17 @@ int main(int argc, char* argv[])
         exit(1);
     }
 
-    char* type             = getenv("NRHP_TYPE");
-    char* gre_key          = getenv("NRHP_GRE_KEY");
-    char* interface        = getenv("NHRP_INTERFACE");
-    char* destmtu          = getenv("NHRP_DESTMTU");
-    char* destnbma         = getenv("NRHP_DESTNBMA");
-    char* srcnbma          = getenv("NRHP_SRCNBMA");
-    char* destaddr         = getenv("NRHP_DESTADDR");
-    char* srcaddr          = getenv("NRHP_SRCADDR");
-    char* peer_down_reason = getenv("NRHP_PEER_DOWN_REASON");
-    char* nexthop          = getenv("NRHP_NEXTHOP");
-    char* destprefix       = getenv("NRHP_DESTPREFIX");
+    char* type             = getenv("NHRP_TYPE");
+    char* gre_key          = getenv("NHRP_GRE_KEY");
+    char* interface        = getenv("NRHP_INTERFACE");
+    char* destmtu          = getenv("NRHP_DESTMTU");
+    char* destnbma         = getenv("NHRP_DESTNBMA");
+    char* srcnbma          = getenv("NHRP_SRCNBMA");
+    char* destaddr         = getenv("NHRP_DESTADDR");
+    char* srcaddr          = getenv("NHRP_SRCADDR");
+    char* peer_down_reason = getenv("NHRP_PEER_DOWN_REASON");
+    char* nexthop          = getenv("NHRP_NEXTHOP");
+    char* destprefix       = getenv("NHRP_DESTPREFIX");
 
     switch (lookup(argv[1]))
     {
@@ -37,7 +37,6 @@ int main(int argc, char* argv[])
         case PEER_UP:
             if (destmtu != NULL)
                 route_add(RT_PROTO, srcnbma, destnbma, destmtu);
-
             break;
 
         case PEER_DOWN:

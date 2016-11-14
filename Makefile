@@ -1,12 +1,12 @@
 CC = clang
 
-CFLAGS = -Wall -g
+CFLAGS = -Wall -g -I/usr/include/libnl3/
 
 LFLAGS = -L/usr/lib/ipsec/
 
-LIBS = -lvici
+LIBS = -lvici -lnl-route-3 -lnl-3
 
-SRCS = src/opennhrp-script.c src/util.c src/conn.c src/hash.c src/route.c src/neigh.c
+SRCS = src/desist.c src/util.c src/conn.c src/hash.c src/route.c src/neigh.c
 
 FMT = astyle
 FMT_OPT = --style=allman \
@@ -25,7 +25,7 @@ FMT_OPT = --style=allman \
 # Suffix replace syntax: $(name:string1=string2)
 OBJS = $(SRCS:.c=.o)
 
-BIN = opennhrp-script
+BIN = desist
 
 .PHONY: clean
 
@@ -41,10 +41,7 @@ $(BIN): $(OBJS)
 	$(CC) $(CFLAGS) -c $<  -o $@
 
 clean:
-	$(RM) src/*.o *~ $(BIN)
+	$(RM) src/*.o *~ $(BIN) src/*.prefmt
 
 style:
 	$(FMT) $(FMT_OPT) src/*.c src/*.h
-
-clean-style:
-	$(RM) src/*.prefmt
