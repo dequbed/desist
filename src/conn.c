@@ -1,11 +1,11 @@
 #include "conn.h"
 
-void add_list(vici_req_t* req, char* type, char* proposals[], uint32_t len)
+void add_list(vici_req_t* req, char* type, char* elements[], uint32_t len)
 {
     vici_begin_list(req, type);
 
     for (uint32_t i = 0; i < len; i++)
-        vici_add_list_itemf(req, proposals[i]);
+        vici_add_list_itemf(req, elements[i]);
 
     vici_end_list(req);
 }
@@ -15,16 +15,15 @@ int setup(char* remote)
     char* proposals[] = {"chacha20poly1305-aes256gcm16-prfsha384-ecp384bp-modp2048s256"};
     char* remote_addrs[] = {remote};
 
-    FILE* f = fopen("/etc/swanctl/x509/mesh.crt", "r");
+    FILE* f = fopen("/etc/swanctl/x509/mesh.der", "r");
     fseek(f, 0, SEEK_END);
     uint32_t len = ftell(f);
     rewind(f);
-    char* cert = malloc(len + 1);
+    char* cert = calloc(1, len);
     fread(cert, len, 1, f);
     fclose(f);
-    cert[len] = 0;
+    //cert[len] = 0;
 
-    char* certs[] = {cert};
     char* esp_proposals[] = {"chacha20poly1305", "aes256gcm16"};
     char* local_ts[] = {"dynamic[gre]"};
 
@@ -40,8 +39,8 @@ int setup(char* remote)
 
     vici_req_t* req = vici_begin("load-conn");
 
-    char* name = malloc(8);
-    snprintf(name, 8, "spoke-%X", hash((uint8_t*)remote, strlen(remote)));
+    char* name = calloc(1, 15);
+    snprintf(name, 14, "spoke-%X", hash((uint8_t*)remote, strlen(remote)));
 
     vici_begin_section(req, name);
 
@@ -53,7 +52,11 @@ int setup(char* remote)
 
     vici_begin_section(req, "local");
     vici_add_key_valuef(req, "auth", "pubkey");
-    add_list(req, "certs", certs, 1);
+
+    vici_begin_list(req, "certs");
+    vici_add_list_item(req, cert, len);
+    vici_end_list(req);
+
     vici_end_section(req);
 
     vici_begin_section(req, "remote");

@@ -3,6 +3,7 @@
 #include "hash.h"
 #include "neigh.h"
 #include "route.h"
+#include "conn.h"
 
 int main(int argc, char* argv[])
 {
@@ -31,23 +32,14 @@ int main(int argc, char* argv[])
             neigh_flush(interface);
             break;
 
-        case PEER_REGISTER:
-            break;
-
         case PEER_UP:
             if (destmtu != NULL)
                 route_add(RT_PROTO, srcnbma, destnbma, destmtu);
-
+            setup(destnbma);
             break;
 
         case PEER_DOWN:
             route_del(RT_PROTO, srcnbma, destnbma);
-            break;
-
-        case NHS_UP:
-            break;
-
-        case NHS_DOWN:
             break;
 
         case ROUTE_UP:
@@ -55,6 +47,7 @@ int main(int argc, char* argv[])
             break;
 
         case ROUTE_DOWN:
+            route_del(RT_PROTO, NULL, destnbma);
             system("ip route flush cache");
             break;
 
@@ -62,6 +55,9 @@ int main(int argc, char* argv[])
         case BADKEY:
             usage();
             exit(1);
+            break;
+
+        default:
             break;
     }
 
