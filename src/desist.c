@@ -35,7 +35,14 @@ int main(int argc, char* argv[])
         case PEER_UP:
             if (destmtu != NULL)
                 route_add(RT_PROTO, srcnbma, destnbma, destmtu);
-            setup(destnbma);
+
+            printf("Type: '%s'\n", type);
+            if (strncmp(type, "cached", 7) == 0)
+            {
+                setup(destnbma);
+                initiate(destnbma);
+            }
+
             break;
 
         case PEER_DOWN:

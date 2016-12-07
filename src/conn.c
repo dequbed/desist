@@ -22,7 +22,6 @@ int setup(char* remote)
     char* cert = calloc(1, len);
     fread(cert, len, 1, f);
     fclose(f);
-    //cert[len] = 0;
 
     char* esp_proposals[] = {"chacha20poly1305", "aes256gcm16"};
     char* local_ts[] = {"dynamic[gre]"};
@@ -83,10 +82,32 @@ int setup(char* remote)
         exit(1);
     }
 
-    uint32_t resi = vici_dump(res, "test", 0, stdout);
+    uint32_t resi = vici_dump(res, "setup", 0, stdout);
 
     vici_disconnect(conn);
 
     vici_deinit();
+    return resi;
+}
+
+int initiate(char* remote)
+{
+    vici_init();
+    vici_conn_t* conn = vici_connect(NULL);
+    vici_req_t* req = vici_begin("initiate");
+
+    vici_add_key_valuef(req, "child", "transport");
+
+    char* name = calloc(1, 15);
+    snprintf(name, 14, "spoke-%X", hash((uint8_t*)remote, strlen(remote)));
+
+    vici_add_key_valuef(req, "ike", name);
+
+    vici_res_t* res = vici_submit(req, conn);
+    uint32_t resi = vici_dump(res, "initiate", 0, stdout);
+
+    vici_disconnect(conn);
+    vici_deinit();
+
     return resi;
 }
