@@ -15,8 +15,8 @@ int main(int argc, char* argv[])
 
     char* type             = getenv("NHRP_TYPE");
     char* gre_key          = getenv("NHRP_GRE_KEY");
-    char* interface        = getenv("NRHP_INTERFACE");
-    char* destmtu          = getenv("NRHP_DESTMTU");
+    char* interface        = getenv("NHRP_INTERFACE");
+    char* destmtu          = getenv("NHRP_DESTMTU");
     char* destnbma         = getenv("NHRP_DESTNBMA");
     char* srcnbma          = getenv("NHRP_SRCNBMA");
     char* destaddr         = getenv("NHRP_DESTADDR");
